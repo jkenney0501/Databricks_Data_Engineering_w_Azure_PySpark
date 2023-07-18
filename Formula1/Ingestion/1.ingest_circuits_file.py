@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC ## Ingest Circuits.csv File
+# MAGIC ## Ingest Circuits csv File
 
 # COMMAND ----------
 
@@ -44,7 +44,7 @@ circuits_schema = StructType(fields=[
 circuits_df = spark.read \
     .option('header', True) \
     .schema(circuits_schema) \
-    .csv('dbfs:/mnt/dlformula1jk/stage/circuits.csv')
+    .csv('/mnt/dlformula1jk/stage/circuits.csv')
 
 # COMMAND ----------
 
@@ -59,7 +59,7 @@ display(circuits_df)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Selecting the Required Columns
+# MAGIC ### Selecting the Required Columns
 # MAGIC - Method 1 just lets you select the columns while the other let you apply column based functions like alias.
 # MAGIC
 # MAGIC **Step 2** \
@@ -70,7 +70,7 @@ display(circuits_df)
 # example of using select to get the columns
 circuits_select_df1 = circuits_df.select("circuitId", "circuitRef", "name", "location", "country", "lat", "lng", "alt")
 
-circuits_select_df.show(3)
+circuits_select_df1.show(3)
 
 # COMMAND ----------
 
@@ -100,7 +100,7 @@ circuits_select_df.show(3)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Renaming Columns
+# MAGIC ### Renaming Columns
 # MAGIC - Use snake case as is a standard python convention
 # MAGIC
 # MAGIC **Step 3**
@@ -118,6 +118,54 @@ circuits_renamed_df = circuits_select_df.withColumnRenamed("circuitId", "circuit
 
 # see the renamed df
 display(circuits_renamed_df)
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC ### Add or Alter a Column Using withColumn
+# MAGIC - add ingestion date column using current_timestamp()
+# MAGIC
+# MAGIC **Step 4**
+
+# COMMAND ----------
+
+from pyspark.sql.functions import current_timestamp
+# remoning this it was just an example, lit
+
+# COMMAND ----------
+
+# lit creates a column object from a literal value, in addition to the timestamp, a new column with a string literal called ebv with the value production will be added
+circuits_final_df = circuits_renamed_df.withColumn("ingestion_dt", current_timestamp()) 
+
+# .withColumn("env", lit("Production"))
+
+display(circuits_final_df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Write the Data Frame to the Data Lake 
+# MAGIC - format as parquet
+# MAGIC
+# MAGIC **Step 5**
+
+# COMMAND ----------
+
+circuits_final_df.write \
+    .mode('overwrite') \
+    .parquet('/mnt/dlformula1jk/clean/circuits')
+
+# COMMAND ----------
+
+# MAGIC %fs
+# MAGIC ls /mnt/dlformula1jk/clean/circuits
+
+# COMMAND ----------
+
+# read in the parquet file
+df = spark.read.parquet('/mnt/dlformula1jk/clean/circuits')
+
+display(df)
 
 # COMMAND ----------
 
