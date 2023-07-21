@@ -17,38 +17,41 @@
 # COMMAND ----------
 
 # Import required types
-from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
+from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType, LongType
 
 # COMMAND ----------
 
 # create schema 
 results_schema = StructType(fields=[
     StructField("resultId", IntegerType(), False),
+    StructField("driverId", IntegerType(), False),
+    StructField("constructorId", IntegerType(), False),
     StructField("raceId", IntegerType(), False),
-    StructField("driverId ", StringType(), False),
-    StructField("constructorId ", StringType(), False),
-    StructField("number", IntegerType(), True),
-    StructField("grid  ", StringType(), True),
+    StructField("number",IntegerType(), True),
+    StructField("grid", IntegerType(), True),
     StructField("position", IntegerType(), True),
-    StructField("positionText ", StringType(), True),
     StructField("positionOrder", IntegerType(), True),
-    StructField("points", FloatType(), True),
+    StructField("positionText", IntegerType(), True),
+    StructField("points", DoubleType(), True),
     StructField("laps", IntegerType(), True),
     StructField("time", StringType(), True),
-    StructField("milliseconds", IntegerType(), True),
+    StructField("milliseconds", StringType(), True),
     StructField("fastestLap", IntegerType(), True),
     StructField("rank", IntegerType(), True),
     StructField("fastestLapTime", StringType(), True),
     StructField("fastestLapSpeed", StringType(), True),
     StructField("statusId", IntegerType(), True)
+    
 ])
 
 # COMMAND ----------
 
 # read the json to a dataframe
 results_df = spark.read \
-            .option("inferschema", True) \
+            .schema(results_schema) \
             .json('/mnt/dlformula1jk/stage/results.json')
+
+# COMMAND ----------
 
 display(results_df)
 
@@ -76,7 +79,20 @@ results_cleaned = results_df.withColumnRenamed("resultId", "result_id") \
                             .withColumn("ingestion_date", current_timestamp()) \
                             .drop("statusId")
 
+# COMMAND ----------
+
+# show cleaned results
 display(results_cleaned)
+
+# COMMAND ----------
+
+# parition  by race id and write to clean folder
+results_cleaned.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/dlformula1jk/clean/results')
+
+# COMMAND ----------
+
+# read in the parquet file using file sysytem semantics
+display(spark.read.parquet('/mnt/dlformula1jk/clean/results'))
 
 # COMMAND ----------
 
