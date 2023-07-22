@@ -10,6 +10,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -115,12 +124,17 @@ circuits_select_df.show(3)
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
 # Step 3.
 circuits_renamed_df = circuits_select_df.withColumnRenamed("circuitId", "circuit_id") \
     .withColumnRenamed("circuitRef", "circuit_ref") \
     .withColumnRenamed("lat", "lattitude") \
     .withColumnRenamed("lng", "longitude") \
-    .withColumnRenamed("alt", "altitude") 
+    .withColumnRenamed("alt", "altitude") \
+    .withColumn("data_source", lit(v_data_source))
 
 # COMMAND ----------
 
