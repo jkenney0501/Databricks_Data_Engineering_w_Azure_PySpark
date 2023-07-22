@@ -12,6 +12,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md Find the file in the stage container to read in using file system sematics
 
 # COMMAND ----------
@@ -40,7 +48,7 @@ constructors_schema = StructType(fields=[
 constructors_df = spark.read \
     .format('json') \
     .schema(constructors_schema) \
-    .json('/mnt/dlformula1jk/stage/constructors.json')
+    .json(f'{stage_folder_path}/constructors.json')
 
 # COMMAND ----------
 
@@ -86,7 +94,7 @@ display(constructors_df_final)
 
 # COMMAND ----------
 
-constructors_df_final.write.mode("overwrite").parquet("/mnt/dlformula1jk/clean/constructors")
+constructors_df_final.write.mode("overwrite").parquet(f"{clean_folder_path}/constructors")
 
 # COMMAND ----------
 

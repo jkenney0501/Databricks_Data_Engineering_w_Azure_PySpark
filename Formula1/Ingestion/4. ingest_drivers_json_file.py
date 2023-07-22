@@ -12,6 +12,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC find file path for file 
 
@@ -50,7 +58,7 @@ driver_schema = StructType(fields=[
 # read in the file
 driver_df = spark.read \
             .schema(driver_schema) \
-            .json('/mnt/dlformula1jk/stage/drivers.json')
+            .json(f'{stage_folder_path}/drivers.json')
 
 # COMMAND ----------
 
@@ -88,12 +96,12 @@ display(driver_df_final)
 # COMMAND ----------
 
 # write the output to a parquet file - drivers folder in the clean container
-driver_df_final.write.mode("overwrite").parquet("/mnt/dlformula1jk/clean/drivers")
+driver_df_final.write.mode("overwrite").parquet(f"{clean_folder_path}/drivers")
 
 # COMMAND ----------
 
 # display the parquert file
-display(spark.read.parquet("/mnt/dlformula1jk/clean/drivers"))
+display(spark.read.parquet(f"{clean_folder_path}/drivers"))
 
 # COMMAND ----------
 

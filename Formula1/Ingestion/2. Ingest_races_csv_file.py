@@ -9,6 +9,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md See the files in the container
 
 # COMMAND ----------
@@ -45,7 +53,7 @@ races_schema = StructType(fields=[
 races_df_stg = spark.read \
     .option('header', True) \
     .schema(races_schema) \
-    .csv('/mnt/dlformula1jk/stage/races.csv')
+    .csv(f'{stage_folder_path}/races.csv')
 
 # COMMAND ----------
 
@@ -109,7 +117,7 @@ races_df_transformed.show(5, truncate=False)
 # COMMAND ----------
 
 # add a partition for race year
-races_df_transformed.write.mode('overwrite').partitionBy('race_year').parquet('/mnt/dlformula1jk/clean/races')
+races_df_transformed.write.mode('overwrite').partitionBy('race_year').parquet(f'{clean_folder_path}/races')
 
 # COMMAND ----------
 
@@ -123,7 +131,7 @@ races_df_transformed.write.mode('overwrite').partitionBy('race_year').parquet('/
 # COMMAND ----------
 
 # read the parquet file
-display(spark.read.parquet('/mnt/dlformula1jk/clean/races'))
+display(spark.read.parquet(f'{clean_folder_path}/races'))
 
 # COMMAND ----------
 

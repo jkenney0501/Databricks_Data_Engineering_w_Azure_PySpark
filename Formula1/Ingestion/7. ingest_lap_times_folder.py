@@ -11,6 +11,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # import required types for schema
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
@@ -31,7 +39,7 @@ lap_times_schema = StructType(fields=[
 # read in the data-specify the folder with all the csv files in it
 lap_times_df = spark.read \
     .schema(lap_times_schema) \
-    .csv('/mnt/dlformula1jk/stage/lap_times/lap_times_split*.csv')
+    .csv(f'{stage_folder_path}/lap_times/lap_times_split*.csv')
 
 # COMMAND ----------
 
@@ -63,12 +71,12 @@ lap_times_df_renamed.count()
 # COMMAND ----------
 
 # write the df to the clean container
-lap_times_df_renamed.write.mode('overwrite').parquet('/mtn/dlformula1jk/clean/lap_times')
+lap_times_df_renamed.write.mode('overwrite').parquet(f'{clean_folder_path}/lap_times')
 
 # COMMAND ----------
 
 # view the parquet in the clean container
-display(spark.read.parquet('/mtn/dlformula1jk/clean/lap_times'))
+display(spark.read.parquet(f'{clean_folder_path}/lap_times'))
 
 # COMMAND ----------
 

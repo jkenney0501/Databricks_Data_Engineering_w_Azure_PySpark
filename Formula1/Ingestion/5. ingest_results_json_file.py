@@ -16,6 +16,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # Import required types
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType, LongType
 
@@ -49,7 +57,7 @@ results_schema = StructType(fields=[
 # read the json to a dataframe
 results_df = spark.read \
             .schema(results_schema) \
-            .json('/mnt/dlformula1jk/stage/results.json')
+            .json(f'{stage_folder_path}/results.json')
 
 # COMMAND ----------
 
@@ -87,12 +95,12 @@ display(results_cleaned)
 # COMMAND ----------
 
 # parition  by race id and write to clean folder
-results_cleaned.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/dlformula1jk/clean/results')
+results_cleaned.write.mode('overwrite').partitionBy('race_id').parquet(f'{clean_folder_path}/results')
 
 # COMMAND ----------
 
 # read in the parquet file using file sysytem semantics
-display(spark.read.parquet('/mnt/dlformula1jk/clean/results'))
+display(spark.read.parquet(f'{clean_folder_path}/results'))
 
 # COMMAND ----------
 

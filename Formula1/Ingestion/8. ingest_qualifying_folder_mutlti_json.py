@@ -15,6 +15,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # import types needed to enforce schema
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
@@ -39,7 +47,7 @@ qualify_schema = StructType(fields=[
 qualifying_df = spark.read \
     .schema(qualify_schema) \
     .option('multiLine', True) \
-    .json('/mnt/dlformula1jk/stage/qualifying/qualifying_split*.json')
+    .json(f'{stage_folder_path}/qualifying/qualifying_split*.json')
 
 # COMMAND ----------
 
@@ -71,12 +79,12 @@ qualifying_df_cleaned.count()
 # COMMAND ----------
 
 # write to parquet in clean container
-qualifying_df_cleaned.write.mode('overwrite').parquet('/mnt/dlformula1jk/clean/qualifying')
+qualifying_df_cleaned.write.mode('overwrite').parquet(f'{clean_folder_path}/qualifying')
 
 # COMMAND ----------
 
 # query parquet in clean container
-display(spark.read.parquet('/mnt/dlformula1jk/clean/qualifying'))
+display(spark.read.parquet(f'{clean_folder_path}/qualifying'))
 
 # COMMAND ----------
 

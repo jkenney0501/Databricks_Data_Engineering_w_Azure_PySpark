@@ -11,6 +11,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # import required types for schema
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
@@ -33,7 +41,7 @@ pit_stop_schema = StructType(fields=[
 pitstop_df = spark.read \
     .schema(pit_stop_schema) \
     .option('multiLine', True) \
-    .json('/mnt/dlformula1jk/stage/pit_stops.json')
+    .json(f'{stage_folder_path}/pit_stops.json')
 
 # COMMAND ----------
 
@@ -60,12 +68,12 @@ pit_stop_df_renamed.show(3, truncate=False)
 # COMMAND ----------
 
 # write the df to the clean container
-pit_stop_df_renamed.write.mode('overwrite').parquet('/mtn/dlformula1jk/clean/pit_stops')
+pit_stop_df_renamed.write.mode('overwrite').parquet(f'{clean_folder_path}/pit_stops')
 
 # COMMAND ----------
 
 # view the parquet in the clean container
-display(spark.read.parquet('/mtn/dlformula1jk/clean/pit_stops'))
+display(spark.read.parquet(f'{clean_folder_path}/pit_stops'))
 
 # COMMAND ----------
 

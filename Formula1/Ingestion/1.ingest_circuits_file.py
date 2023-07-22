@@ -10,6 +10,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configurations"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # get the path for the file first
 display(dbutils.fs.mounts())
 
@@ -44,7 +52,7 @@ circuits_schema = StructType(fields=[
 circuits_df = spark.read \
     .option('header', True) \
     .schema(circuits_schema) \
-    .csv('/mnt/dlformula1jk/stage/circuits.csv')
+    .csv(f'{stage_folder_path}/circuits.csv')
 
 # COMMAND ----------
 
@@ -129,13 +137,16 @@ display(circuits_renamed_df)
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+# from pyspark.sql.functions import current_timestamp
 # remoning this it was just an example, lit
 
 # COMMAND ----------
 
 # lit creates a column object from a literal value, in addition to the timestamp, a new column with a string literal called ebv with the value production will be added
-circuits_final_df = circuits_renamed_df.withColumn("ingestion_dt", current_timestamp()) 
+# circuits_final_df = circuits_renamed_df.withColumn("ingestion_dt", current_timestamp()) 
+
+# using new function method with %run command
+circuits_final_df = add_ingestion_date(circuits_renamed_df)
 
 # .withColumn("env", lit("Production"))
 
@@ -153,7 +164,7 @@ display(circuits_final_df)
 
 circuits_final_df.write \
     .mode('overwrite') \
-    .parquet('/mnt/dlformula1jk/clean/circuits')
+    .parquet(f'{clean_folder_path}/circuits')
 
 # COMMAND ----------
 
@@ -163,9 +174,14 @@ circuits_final_df.write \
 # COMMAND ----------
 
 # read in the parquet file
-df = spark.read.parquet('/mnt/dlformula1jk/clean/circuits')
+df = spark.read.parquet(f'{clean_folder_path}/circuits')
 
 display(df)
+
+# COMMAND ----------
+
+# count rows
+df.count()
 
 # COMMAND ----------
 
