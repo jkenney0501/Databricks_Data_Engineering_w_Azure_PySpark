@@ -16,6 +16,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -70,7 +79,7 @@ results_df.printSchema()
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
@@ -85,6 +94,7 @@ results_cleaned = results_df.withColumnRenamed("resultId", "result_id") \
                             .withColumnRenamed("fastestLapTime", "fastest_lap_time") \
                             .withColumnRenamed("fastestLapSpeed", "fastest_lap_speed") \
                             .withColumn("ingestion_date", current_timestamp()) \
+                            .withColumn("data_source", lit(v_data_source)) \
                             .drop("statusId")
 
 # COMMAND ----------
@@ -104,4 +114,4 @@ display(spark.read.parquet(f'{clean_folder_path}/results'))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

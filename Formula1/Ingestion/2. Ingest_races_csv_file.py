@@ -9,6 +9,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -81,9 +90,14 @@ display(races_df_stg)
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
 races_df_renamed = races_df_stg.withColumnRenamed('raceid', 'race_id') \
                                .withColumnRenamed('year', 'race_year') \
-                               .withColumnRenamed('circuitId', 'circuit_id')
+                               .withColumnRenamed('circuitId', 'circuit_id') \
+                               .withColumn("data_source", lit(v_data_source))
 
 races_df_renamed.show(3)                               
 
@@ -135,4 +149,4 @@ display(spark.read.parquet(f'{clean_folder_path}/races'))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

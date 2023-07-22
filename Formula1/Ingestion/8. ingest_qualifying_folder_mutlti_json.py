@@ -15,6 +15,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -55,7 +64,7 @@ display(qualifying_df)
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
@@ -64,7 +73,8 @@ qualifying_df_cleaned = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id
     .withColumnRenamed('raceId', 'race_id') \
     .withColumnRenamed('driverId', 'driver_id') \
     .withColumnRenamed('constructorId', 'constuctor_id') \
-    .withColumn('ingestion_date', current_timestamp())
+    .withColumn('ingestion_date', current_timestamp()) \
+    .withColumn("data_source", lit(v_data_source))
 
 # COMMAND ----------
 
@@ -88,4 +98,4 @@ display(spark.read.parquet(f'{clean_folder_path}/qualifying'))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

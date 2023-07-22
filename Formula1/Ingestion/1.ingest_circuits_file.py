@@ -199,4 +199,4 @@ df.count()
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

@@ -12,6 +12,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -81,9 +90,14 @@ from pyspark.sql.functions import current_timestamp
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
 constructors_df_final = constructors_df_clean.withColumn('ingestion_date', current_timestamp()) \
     .withColumnRenamed('constructorId', 'constructor_id') \
-    .withColumnRenamed('constructorRef', 'constructor_ref')
+    .withColumnRenamed('constructorRef', 'constructor_ref') \
+    .withColumn("data_source", lit(v_data_source))
 
 display(constructors_df_final)
 
@@ -107,4 +121,4 @@ constructors_df_final.write.mode("overwrite").parquet(f"{clean_folder_path}/cons
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

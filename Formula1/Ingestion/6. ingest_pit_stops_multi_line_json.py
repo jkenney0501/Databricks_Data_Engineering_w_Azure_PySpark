@@ -11,6 +11,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -51,14 +60,15 @@ display(pitstop_df)
 # COMMAND ----------
 
 # import current_timestamp for new column to be added
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
 # rename columns raceId and driverId
 pit_stop_df_renamed = pitstop_df.withColumnRenamed('raceId', 'race_id') \
     .withColumnRenamed('driverId', 'driver_id') \
-    .withColumn('ingestion_date', current_timestamp())
+    .withColumn('ingestion_date', current_timestamp()) \
+    .withColumn("data_source", lit(v_data_source))
 
 # COMMAND ----------
 
@@ -77,4 +87,4 @@ display(spark.read.parquet(f'{clean_folder_path}/pit_stops'))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")

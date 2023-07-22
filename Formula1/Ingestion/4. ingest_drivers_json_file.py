@@ -12,6 +12,15 @@
 
 # COMMAND ----------
 
+# add widget for data source to be captured in a column
+dbutils.widgets.text("p_data_source", "")
+
+# COMMAND ----------
+
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configurations"
 
 # COMMAND ----------
@@ -71,10 +80,15 @@ display(driver_df)
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
 # drop the url and rename driverId and driverRef to driver_id, driver_ref. Note steps 1,2,3 can be combined but for practical purposes....
 driver_df_cleaned = driver_df.drop('url') \
     .withColumnRenamed("driverId", "driver_id") \
-    .withColumnRenamed("driverRef", "driver_ref")
+    .withColumnRenamed("driverRef", "driver_ref") \
+    .withColumn("data_source", lit(v_data_source))
 
 display(driver_df_cleaned)
 
@@ -105,4 +119,4 @@ display(spark.read.parquet(f"{clean_folder_path}/drivers"))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Workflow was successful")
