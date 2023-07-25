@@ -97,7 +97,7 @@ from pyspark.sql.functions import current_timestamp
 # select the needed columns
 final_df =  race_results_df.select('race_year', 'race_name', 'race_date', 'circuit_location', 
                                    'driver_name', 'driver_number', 'driver_nationality', 'team', 
-                                   'grid', 'fastest_lap', 'race_time', 'points').withColumn('created_date', current_timestamp())
+                                   'grid', 'fastest_lap', 'race_time', 'points', 'position').withColumn('created_date', current_timestamp())
 
 # COMMAND ----------
 
