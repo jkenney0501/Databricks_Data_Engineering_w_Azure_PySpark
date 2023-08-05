@@ -58,6 +58,7 @@ driver_schema = StructType(fields=[
     StructField("number", IntegerType(), True),
     StructField("code", StringType(), True),
     StructField("name", name_schema),
+    StructField("dob", StringType(), True),
     StructField("nationality", StringType(), True),
     StructField("url", StringType(), True)
 ])

@@ -94,7 +94,7 @@ DESCRIBE EXTENDED f1_raw.races;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ### Create consructors table
+-- MAGIC ### Create constructors table
 -- MAGIC - Single line JSON
 -- MAGIC - Simple structure (dictionay like KV pairs)
 
@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS f1_raw.drivers(
   number INT,
   code STRING,
   name STRUCT <forename: STRING, surname:STRING>,
+  dob STRING,
   nationality STRING,
   url STRING
 )
