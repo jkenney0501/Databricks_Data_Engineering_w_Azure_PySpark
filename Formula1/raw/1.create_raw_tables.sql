@@ -2,6 +2,7 @@
 -- MAGIC %md
 -- MAGIC ### This notebook creates a database from raw table storage and creates tables for that raw data.
 -- MAGIC - Tables are created in HIVE metastore as EXTERNAL tables (they are stored in ADLS and not the HIVE DWH)
+-- MAGIC - Data is ingested similar to how we stage it but using SQL. It will then be a transformed layer and stored in a final/presentation layer.
 
 -- COMMAND ----------
 
@@ -99,6 +100,8 @@ DESCRIBE EXTENDED f1_raw.races;
 
 -- COMMAND ----------
 
+DROP TABLE IF EXISTS f1_raw.constructors;
+
 CREATE TABLE IF NOT EXISTS f1_raw.constructors(
   constructorId INT,
   constructorRef INT,
@@ -123,6 +126,8 @@ LIMIT 3;
 -- MAGIC - Complex structure - name field is nested json
 
 -- COMMAND ----------
+
+DROP TABLE IF EXISTS f1_raw.drivers;
 
 CREATE TABLE IF NOT EXISTS f1_raw.drivers(
   driverId INT,
@@ -150,6 +155,8 @@ LIMIT 3;
 -- MAGIC - Simple structure
 
 -- COMMAND ----------
+
+DROP TABLE IF EXISTS f1_raw.results;
 
 CREATE TABLE IF NOT EXISTS f1_raw.results(
   resultId INT,
@@ -191,6 +198,8 @@ LIMIT 3;
 
 -- COMMAND ----------
 
+DROP TABLE IF EXISTS f1_raw.pit_stops;
+
 CREATE TABLE IF NOT EXISTS f1_raw.pit_stops(
   raceId INT,
   driverId INT,
@@ -218,6 +227,8 @@ LIMIT 3;
 
 -- COMMAND ----------
 
+DROP TABLE IF EXISTS f1_raw.lap_times;
+
 CREATE TABLE IF NOT EXISTS f1_raw.lap_times(
     raceId INT,
     driverId INT,
@@ -244,7 +255,6 @@ LIMIT 3;
 
 -- COMMAND ----------
 
--- **************there is an error here that needs fixed, data is not being inserted into the table******************come back and fix this!
 DROP TABLE IF EXISTS f1_raw.qualifying;
 
 CREATE TABLE IF NOT EXISTS f1_raw.qualifying(
@@ -259,14 +269,20 @@ CREATE TABLE IF NOT EXISTS f1_raw.qualifying(
     raceId INT
 )
 USING JSON
-OPTIONS(path "/mnt/dlformulajk/stage/qualifying", multiLine True)
+OPTIONS(path "/mnt/dlformula1jk/stage/qualifying/qualifying_split*.json", multiLine True)
 
 -- COMMAND ----------
 
+-- get a count
 SELECT COUNT(1) FROM f1_raw.qualifying;
 
 -- COMMAND ----------
 
+-- view the results
 SELECT *
 FROM f1_raw.qualifying
 LIMIT 3;
+
+-- COMMAND ----------
+
+
