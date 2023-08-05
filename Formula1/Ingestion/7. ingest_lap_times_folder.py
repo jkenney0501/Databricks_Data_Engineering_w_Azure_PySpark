@@ -81,7 +81,7 @@ lap_times_df_renamed.count()
 # COMMAND ----------
 
 # write the df to the clean container
-lap_times_df_renamed.write.mode('overwrite').parquet(f'{clean_folder_path}/lap_times')
+lap_times_df_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_clean.lap_times')
 
 # COMMAND ----------
 

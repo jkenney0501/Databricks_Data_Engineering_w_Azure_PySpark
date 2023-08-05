@@ -105,7 +105,7 @@ display(results_cleaned)
 # COMMAND ----------
 
 # parition  by race id and write to clean folder
-results_cleaned.write.mode('overwrite').partitionBy('race_id').parquet(f'{clean_folder_path}/results')
+results_cleaned.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_clean.results')
 
 # COMMAND ----------
 

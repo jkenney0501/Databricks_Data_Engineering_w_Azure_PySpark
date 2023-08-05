@@ -78,7 +78,7 @@ pit_stop_df_renamed.show(3, truncate=False)
 # COMMAND ----------
 
 # write the df to the clean container
-pit_stop_df_renamed.write.mode('overwrite').parquet(f'{clean_folder_path}/pit_stops')
+pit_stop_df_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_clean.pit_stops')
 
 # COMMAND ----------
 

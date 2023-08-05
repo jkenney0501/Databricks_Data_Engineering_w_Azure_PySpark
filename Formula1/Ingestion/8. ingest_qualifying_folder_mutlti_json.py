@@ -89,7 +89,7 @@ qualifying_df_cleaned.count()
 # COMMAND ----------
 
 # write to parquet in clean container
-qualifying_df_cleaned.write.mode('overwrite').parquet(f'{clean_folder_path}/qualifying')
+qualifying_df_cleaned.write.mode('overwrite').format('parquet').saveAsTable('f1_clean.qualifying')
 
 # COMMAND ----------
 

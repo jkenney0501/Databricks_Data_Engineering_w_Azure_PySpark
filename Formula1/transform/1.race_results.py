@@ -115,7 +115,7 @@ final_df.count()
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet(f'{final_folder_path}/race_results')
+final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_final.race_results')
 
 # COMMAND ----------
 

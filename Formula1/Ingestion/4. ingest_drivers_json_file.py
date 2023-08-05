@@ -110,7 +110,7 @@ display(driver_df_final)
 # COMMAND ----------
 
 # write the output to a parquet file - drivers folder in the clean container
-driver_df_final.write.mode("overwrite").parquet(f"{clean_folder_path}/drivers")
+driver_df_final.write.mode("overwrite").format('parquet').saveAsTable('f1_clean.drivers')
 
 # COMMAND ----------
 

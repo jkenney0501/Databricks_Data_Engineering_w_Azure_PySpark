@@ -131,7 +131,7 @@ races_df_transformed.show(5, truncate=False)
 # COMMAND ----------
 
 # add a partition for race year
-races_df_transformed.write.mode('overwrite').partitionBy('race_year').parquet(f'{clean_folder_path}/races')
+races_df_transformed.write.mode('overwrite').partitionBy('race_year').format('parquet').saveAsTable('f1_clean.races')
 
 # COMMAND ----------
 

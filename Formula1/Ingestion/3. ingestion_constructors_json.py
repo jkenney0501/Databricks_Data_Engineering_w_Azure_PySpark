@@ -108,7 +108,7 @@ display(constructors_df_final)
 
 # COMMAND ----------
 
-constructors_df_final.write.mode("overwrite").parquet(f"{clean_folder_path}/constructors")
+constructors_df_final.write.mode("overwrite").format('parquet').saveAsTable('f1_clean.constructors')
 
 # COMMAND ----------
 

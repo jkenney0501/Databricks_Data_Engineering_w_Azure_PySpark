@@ -178,7 +178,8 @@ display(circuits_final_df)
 
 circuits_final_df.write \
     .mode('overwrite') \
-    .parquet(f'{clean_folder_path}/circuits')
+    .format('parquet') \
+    .saveAsTable('f1_clean.circuits')
 
 # COMMAND ----------
 
